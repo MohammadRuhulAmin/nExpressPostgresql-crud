@@ -10,15 +10,16 @@ let pool = new Pool();
 app.use(morgan('dev'));
 
 
-// app.get('/',(req,res)=>{
-//   try{
-//     pool.connect((error,client,release)=>{
-//       client.query(`SELECT * FROM borolekh where plot_no_en = 1`);
-//     })
-//   }catch(error){
-//     console.log(error);
-//   }
-// })
+app.get('/info/get',(req,res)=>{
+  try{
+    pool.connect(async (error,client,release)=>{
+      let resp = await client.query(`SELECT ST_AsGeoJson(geom) from borolekh`);
+      res.send(resp.rows);
+    });
+  }catch(error){
+    console.log(error);
+  }
+})
 
 app.listen(port,()=>{
   console.log('Server is listening to the port :', port );
